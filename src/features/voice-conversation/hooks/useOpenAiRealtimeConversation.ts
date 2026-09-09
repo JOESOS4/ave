@@ -449,6 +449,29 @@ function publishRealtimeStatus(
   );
 }
 
+function resetRealtimeStatusWhenRunSettles(
+  runtime: OpenAiRealtimeConversationRuntime,
+  sessionId: string,
+): void {
+  let sawRun = false;
+  const check = () => {
+    if (runtime.getSnapshot().boundSessionId !== sessionId) {
+      unsubscribe();
+      return;
+    }
+    const master = useChatStore.getState().getSessionRuntime(sessionId);
+    if (master.activeRunId !== null || isSessionRunning(master.chatState)) {
+      sawRun = true;
+      return;
+    }
+    if (!sawRun) return;
+    unsubscribe();
+    runtime.markWaiting(sessionId);
+  };
+  const unsubscribe = useChatStore.subscribe(check);
+  queueMicrotask(check);
+}
+
 class OpenAiRealtimeConversationRuntime {
   private snapshot: Snapshot = OFF_SNAPSHOT;
   private readonly listeners = new Set<() => void>();
@@ -1184,6 +1207,12 @@ class OpenAiRealtimeConversationRuntime {
     this.setSnapshot(OFF_SNAPSHOT);
   }
 
+  markWaiting(sessionId: string): void {
+    if (this.snapshot.boundSessionId !== sessionId) return;
+    this.setSnapshot({ ...this.snapshot, state: "listening" });
+    publishRealtimeStatus(sessionId, "waiting");
+  }
+
   private deliverToMaster(
     sessionId: string,
     text: string,
@@ -1291,8 +1320,7 @@ class OpenAiRealtimeConversationRuntime {
         }
         onDelivered?.();
         if (this.snapshot.boundSessionId === sessionId) {
-          this.setSnapshot({ ...this.snapshot, state: "listening" });
-          publishRealtimeStatus(sessionId, "waiting");
+          resetRealtimeStatusWhenRunSettles(this, sessionId);
         }
       })
       .catch((error) => {
