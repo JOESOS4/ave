@@ -208,7 +208,7 @@ mod macos_completion {
         let center = UNUserNotificationCenter::currentNotificationCenter();
 
         let content = UNMutableNotificationContent::new();
-        content.setTitle(&NSString::from_str("Berd"));
+        content.setTitle(&NSString::from_str("Ave"));
         content.setBody(&NSString::from_str(&request.body));
 
         let key = NSString::from_str("sessionId");
@@ -296,7 +296,7 @@ fn show_macos_fallback_completion_notification(
         sound,
     } = request;
 
-    let builder = app.notification().builder().title("Berd").body(body);
+    let builder = app.notification().builder().title("Ave").body(body);
     play_macos_completion_notification_sound(&app, sound.as_deref());
     builder.show().map_err(|error| error.to_string())
 }
@@ -397,7 +397,7 @@ fn show_platform_completion_notification(
         body,
         sound,
     } = request;
-    let mut builder = app.notification().builder().title("Berd").body(body);
+    let mut builder = app.notification().builder().title("Ave").body(body);
     if let Some(sound) = sound {
         builder = builder.sound(sound);
     }

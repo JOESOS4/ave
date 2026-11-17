@@ -145,16 +145,16 @@ function friendlyWorkspaceSetupError(error: unknown): Error {
   }
   if (/permission denied|operation not permitted/i.test(message)) {
     return new Error(
-      "Berd doesn’t have permission to create a worktree there.",
+      "Ave doesn’t have permission to create a worktree there.",
     );
   }
   if (
     /git\s+worktree\s+add/i.test(message) ||
     /failed to create worktree/i.test(message)
   ) {
-    return new Error("Berd couldn’t create that worktree. Try another name.");
+    return new Error("Ave couldn’t create that worktree. Try another name.");
   }
-  return new Error("Berd couldn’t prepare the project workspace. Try again.");
+  return new Error("Ave couldn’t prepare the project workspace. Try again.");
 }
 
 async function rollbackStartupMutations(

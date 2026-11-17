@@ -24,7 +24,7 @@
     "signedInAs": "Signed in as",
     "title": "Account",
     "workspace": {
-      "description": "The BuilderBot workspace used by Berd.",
+      "description": "The BuilderBot workspace used by Ave.",
       "label": "Workspace",
       "loadError": "Couldn't load workspaces.",
       "loading": "Loading...",
@@ -52,7 +52,7 @@
     },
     "theme": {
       "darkLabel": "Dark",
-      "description": "Choose how Berd looks: light, dark, or matched to your system.",
+      "description": "Choose how Ave looks: light, dark, or matched to your system.",
       "label": "Theme",
       "lightLabel": "Light",
       "systemDescription": "Matches your device.",
@@ -78,7 +78,7 @@
       "label": "Archive inactive chats",
       "description": "Automatically archive chats after this much time without a message. Chats pinned to Home are never archived automatically.",
       "confirmTitle": "Turn on automatic archiving?",
-      "confirmDescription": "Berd will archive unpinned chats {{duration}} without another prompt. You can restore them from Archive or turn this off at any time.",
+      "confirmDescription": "Ave will archive unpinned chats {{duration}} without another prompt. You can restore them from Archive or turn this off at any time.",
       "confirmAction": "Turn on",
       "options": {
         "never": "Never",
@@ -129,7 +129,7 @@
     "disconnect": "Disconnect",
     "disconnectError": "Couldn't disconnect. Try again.",
     "empty": {
-      "description": "Add an MCP server to connect Berd to the apps and services you use.",
+      "description": "Add an MCP server to connect Ave to the apps and services you use.",
       "title": "No connections yet"
     },
     "expiresInDays": "Expires in {{count}} days",
@@ -155,7 +155,7 @@
       "title": "Couldn’t load your local MCPs",
       "description": "Try again in a moment.",
       "partialTitle": "Some local MCPs may be missing",
-      "partialDescription": "Berd couldn’t read every local configuration source.",
+      "partialDescription": "Ave couldn’t read every local configuration source.",
       "retry": "Try again",
       "retrying": "Trying…"
     },
@@ -172,18 +172,18 @@
   },
   "doctor": {
     "agents": "Agents",
-    "bundledPath": "Bundled with Berd",
+    "bundledPath": "Bundled with Ave",
     "copied": "Copied",
     "copyDetails": "Copy report",
     "empty": "Couldn't load checks. Try again.",
     "longRunning": "Still running after {{seconds}}s. We'll stop waiting after {{timeoutSeconds}}s if a check is stuck.",
     "open": "Open",
     "rerun": "Run again",
-    "rowDescription": "Run health checks on Berd, agents, and tools.",
+    "rowDescription": "Run health checks on Ave, agents, and tools.",
     "rowStatus_one": "{{count}} check needs attention",
     "rowStatus_other": "{{count}} checks need attention",
     "runFix": "Run fix command?",
-    "runFixDescription": "Berd will run:",
+    "runFixDescription": "Ave will run:",
     "running": "Running checks...",
     "title": "Doctor",
     "tools": "Tools",
@@ -234,7 +234,7 @@
       "title": "PR Inbox"
     },
     "defaultLabel": "default",
-    "description": "Opt into in-progress Berd features on this device. Experiments can change, break, or disappear.",
+    "description": "Opt into in-progress Ave features on this device. Experiments can change, break, or disappear.",
     "emptyDescription": "New experiments will appear here when they are ready for opt-in testing.",
     "onboarding": {
       "cancel": "Cancel",
@@ -254,7 +254,7 @@
       "title": "Prompt pins"
     },
     "remoteSshSessions": {
-      "description": "Run sessions on a remote machine over SSH using hosts from your SSH config. Berd starts and tunnels to a Goose daemon on the remote host.",
+      "description": "Run sessions on a remote machine over SSH using hosts from your SSH config. Ave starts and tunnels to a Goose daemon on the remote host.",
       "title": "Remote SSH sessions"
     },
     "resetToAuto": "Reset to auto",
@@ -301,7 +301,7 @@
       "title": "Delete \"{{name}}\" permanently?"
     },
     "deleteExtension": "Delete connection",
-    "description": "Connect Berd to apps, services, and built-in capabilities.",
+    "description": "Connect Ave to apps, services, and built-in capabilities.",
     "disabledBanner": {
       "description": "These extensions used to be auto enabled for every session, but are now enabled when needed: {{names}}.",
       "dismiss": "Dismiss",
@@ -346,7 +346,7 @@
   },
   "general": {
     "agentToolsTips": {
-      "description": "Berd will show tips in chat for relevant tools, skills, or workflows.",
+      "description": "Ave will show tips in chat for relevant tools, skills, or workflows.",
       "label": "Chat tips"
     },
     "artifactAutoOpen": {
@@ -384,7 +384,7 @@
       "versionUnknown": "Bundled version unavailable"
     },
     "followUpBehavior": {
-      "description": "Queue follow-ups while Berd responds or steer the current run. Press Cmd+Enter to do the opposite for one message.",
+      "description": "Queue follow-ups while Ave responds or steer the current run. Press Cmd+Enter to do the opposite for one message.",
       "label": "Follow-up behavior",
       "queue": "Queue",
       "steer": "Steer (Goose harness only)"
@@ -394,7 +394,7 @@
       "label": "Group chats by project"
     },
     "language": {
-      "description": "Sets the language Berd uses across menus, buttons, and messages.",
+      "description": "Sets the language Ave uses across menus, buttons, and messages.",
       "english": "English",
       "label": "Language",
       "spanish": "Spanish",
@@ -482,7 +482,7 @@
       "beakYeah": "Excited",
       "dingDongGoose": "Ding Dong",
       "paidInBread": "A Bit of Everything",
-      "politeHonk": "Berd",
+      "politeHonk": "Ave",
       "quickPeep": "Chime",
       "silent": "Silent",
       "youHaveGotGoose": "Twinkle"
@@ -500,15 +500,15 @@
   },
   "privacy": {
     "telemetry": {
-      "description": "Help improve Berd by sharing usage events, like which features are used. Chat content is never sent.",
+      "description": "Help improve Ave by sharing usage events, like which features are used. Chat content is never sent.",
       "label": "Share usage data",
       "learnMore": "Learn more",
       "saveError": "Couldn't update the usage data setting. Try again.",
       "usageDialog": {
         "collectBody": "Usage events, such as features used, errors, and performance, tied to a random installation ID.",
         "collectTitle": "What we collect",
-        "intro": "We use a random installation ID, not your identity, to see how Berd is used and fix what’s broken.",
-        "notCollectBody": "Your name, email, or account. Berd has no login, so there’s nothing to tie data to.",
+        "intro": "We use a random installation ID, not your identity, to see how Ave is used and fix what’s broken.",
+        "notCollectBody": "Your name, email, or account. Ave has no login, so there’s nothing to tie data to.",
         "notCollectTitle": "What we don’t collect",
         "title": "Sharing usage data"
       }
@@ -541,7 +541,7 @@
       "progress": {
         "installedProvider": "{{name}} installed successfully.",
         "installing": "Installing {{name}}...",
-        "installingForBerd": "Installing {{name}} for Berd…",
+        "installingForAve": "Installing {{name}} for Ave…",
         "preparingProvider": "Preparing the {{name}} installation…",
         "preparingRuntime": "Preparing the Node.js runtime...",
         "step": "Step {{step}} of {{total}}",
@@ -677,8 +677,8 @@
         "connected": {
           "cloudCredentials": "Connected through your cloud credentials.",
           "local": "Running locally.",
-          "oauthBrowser": "Connected through Berd sign-in.",
-          "oauthDeviceCode": "Connected through Berd device-code sign-in."
+          "oauthBrowser": "Connected through Ave sign-in.",
+          "oauthDeviceCode": "Connected through Ave device-code sign-in."
         },
         "fieldDescription": {
           "cloudCredentials": "Add your cloud credentials to use this provider.",
@@ -691,7 +691,7 @@
         "pending": {
           "cloudCredentials": "Configure your cloud credentials in your terminal before using this provider.",
           "local": "This provider runs locally and doesn't need saved settings.",
-          "oauthGuided": "Berd will guide you through sign-in.",
+          "oauthGuided": "Ave will guide you through sign-in.",
           "oauthTerminal": "Run `goose configure` in your terminal to finish sign-in."
         }
       },
@@ -816,7 +816,7 @@
       "description": "The confidence level at which a flagged action prompts you to allow or block it. Lower values are more sensitive (more prompts); higher values are less sensitive. Range 0.0–1.0.",
       "label": "Detection sensitivity",
       "rangeError": "Enter a value between 0.0 and 1.0.",
-      "restartHint": "Changes take effect after restarting Berd.",
+      "restartHint": "Changes take effect after restarting Ave.",
       "save": "Save",
       "saveError": "Failed to update detection sensitivity.",
       "saved": "Detection sensitivity updated."
@@ -880,42 +880,42 @@
       "restartToFinish": "Restart to finish switching to {{channel}}",
       "retry": "Try again",
       "switchTo": "Switch to {{channel}}",
-      "update": "Update Berd"
+      "update": "Update Ave"
     },
     "betaBadge": {
-      "build": "Berd {{version}}",
+      "build": "Ave {{version}}",
       "defaultWhatToTest": "Try the newest features and report anything that feels rough.",
       "open": "Open Beta details",
       "reportIssue": "Report an issue",
       "reportIssueUnavailable": "Beta issue reporting is not configured for this build.",
       "title": "Beta release",
-      "waitingForMain": "Beta updates are off. Berd will switch to Main when a compatible release is ready.",
+      "waitingForMain": "Beta updates are off. Ave will switch to Main when a compatible release is ready.",
       "whatToTest": "What to test"
     },
     "card": {
       "checkPrompt": "Check for a new version",
       "currentVersion": "Version {{version}}",
-      "description": "Keep Berd up to date with the latest features and fixes.",
+      "description": "Keep Ave up to date with the latest features and fixes.",
       "title": "App version"
     },
     "channel": {
       "description": "Choose Main for recommended releases or Beta for early features.",
       "title": "Release channel",
       "unknown": "Current release",
-      "waitingDescription": "Beta updates are off. Berd will return to Main when a compatible release is ready."
+      "waitingDescription": "Beta updates are off. Ave will return to Main when a compatible release is ready."
     },
-    "description": "Berd checks for signed app updates in the background and waits for you to restart.",
+    "description": "Ave checks for signed app updates in the background and waits for you to restart.",
     "details": {
       "available": "Update {{version}} is ready to download.",
       "checking": "Checking for updates...",
       "downloading": "Downloading the latest signed update.",
       "error": "The last update attempt failed.",
-      "idle": "Berd will check automatically every few hours.",
+      "idle": "Ave will check automatically every few hours.",
       "installing": "Installing the downloaded update.",
       "ready": "Update {{version}} is installed and will apply after restart.",
       "switchReady": "{{channel}} {{version}} is installed. Restart when you’re ready to finish switching.",
       "unavailable": "Updates are only available in signed Tauri release builds.",
-      "upToDate": "Berd is up to date."
+      "upToDate": "Ave is up to date."
     },
     "errors": {
       "detail": "Details: {{detail}}",
@@ -940,9 +940,9 @@
       "upToDate": "Up to date"
     },
     "switchDialog": {
-      "betaDescription": "Berd will download the latest beta and restart. Betas get new features first and may have rough edges. You can switch back to Main anytime — from Settings or the Beta badge.",
-      "builds": "You’re running {{source}} {{currentVersion}}. Berd found {{target}} {{targetVersion}}.",
-      "mainDescription": "Berd will make sure everything from the beta works with Main, then download it and restart.",
+      "betaDescription": "Ave will download the latest beta and restart. Betas get new features first and may have rough edges. You can switch back to Main anytime — from Settings or the Beta badge.",
+      "builds": "You’re running {{source}} {{currentVersion}}. Ave found {{target}} {{targetVersion}}.",
+      "mainDescription": "Ave will make sure everything from the beta works with Main, then download it and restart.",
       "restartLater": "You can keep working after the download and restart when you’re ready.",
       "title": "Switch to {{channel}}?"
     },
@@ -953,7 +953,7 @@
         "title": "Update failed"
       },
       "ready": {
-        "description": "Berd {{version}} will apply after restart.",
+        "description": "Ave {{version}} will apply after restart.",
         "title": "Update ready"
       }
     }
@@ -1005,9 +1005,9 @@
     "macSpeechSystemLocale": "the system language",
     "interruptionMode": "Interruptions",
     "interruptionModeDescriptions": {
-      "allowInterruptions": "Berd keeps listening on every audio device. You can interrupt, but speaker audio may be mistaken for your voice.",
-      "automatic": "Allows interruptions on most audio devices. Berd pauses listening on built-in Mac speakers or when the device name contains “speaker” or “altavoces.”",
-      "preventFeedback": "Berd pauses listening on every audio device. This prevents feedback, but you can’t interrupt."
+      "allowInterruptions": "Ave keeps listening on every audio device. You can interrupt, but speaker audio may be mistaken for your voice.",
+      "automatic": "Allows interruptions on most audio devices. Ave pauses listening on built-in Mac speakers or when the device name contains “speaker” or “altavoces.”",
+      "preventFeedback": "Ave pauses listening on every audio device. This prevents feedback, but you can’t interrupt."
     },
     "interruptionModes": {
       "allowInterruptions": "Allow interruptions",
@@ -1035,7 +1035,7 @@
     "notReadyPocketOutput": "Pocket TTS is not installed. Download it below to use Voice Conversation.",
     "notReadySiriOutput": "No installed Siri voice is selected. Download or select one below to use Voice Conversation.",
     "notReadyTitle": "Voice Conversation isn't ready",
-    "microphonePermissionDenied": "Microphone access is turned off for Berd. Allow access in System Settings to use Voice Conversation.",
+    "microphonePermissionDenied": "Microphone access is turned off for Ave. Allow access in System Settings to use Voice Conversation.",
     "microphonePermissionTitle": "Microphone access is required",
     "noVoiceSelected": "No voice selected",
     "openMicrophoneSettings": "Open Microphone Settings",
@@ -1043,7 +1043,7 @@
     "openAiApiKeyConfigured": "Key saved for this URL in macOS Keychain.",
     "openAiApiKeyNotConfigured": "No key set. Enter a key for this URL before using it. Default OpenAI endpoints share one key.",
     "openAiChecking": "Checking OpenAI voice settings…",
-    "openAiEnvironmentOverride": "Development configuration is overridden by the Berd process environment.",
+    "openAiEnvironmentOverride": "Development configuration is overridden by the Ave process environment.",
     "openAiSttApiKey": "OpenAI speech-to-text API key",
     "openAiSttConfigured": "Uses {{model}}.",
     "openAiSttNotConfigured": "Add an API key for the selected transcription URL to use it.",

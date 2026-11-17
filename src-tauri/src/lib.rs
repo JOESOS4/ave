@@ -39,7 +39,7 @@ const APP_LOG_MAX_FILE_SIZE_BYTES: u128 = 10 * 1024 * 1024;
 /// mid-incident.
 const APP_LOG_ARCHIVES_KEPT: usize = 2;
 #[cfg(target_os = "macos")]
-const APP_DISPLAY_NAME: &str = "Berd";
+const APP_DISPLAY_NAME: &str = "Ave";
 #[cfg(target_os = "macos")]
 const DEV_APP_NAME_ENV: &str = "BERD_DEV_APP_NAME";
 #[cfg(target_os = "macos")]
@@ -390,7 +390,7 @@ pub fn run() {
                 }
             });
 
-            // Install or upgrade the Berd-managed ACP bridges (claude, codex)
+            // Install or upgrade the Ave-managed ACP bridges (claude, codex)
             // to the latest published version in the background: each floats
             // to `<pkg>@latest` from the private npm registry onto the managed
             // Node runtime in app data; failures are logged and retried next
@@ -403,26 +403,26 @@ pub fn run() {
             attach_main_window_lifecycle(app);
 
             // Build a custom macOS application menu so that the app submenu,
-            // "About" item, and "Quit" item use the product name "Berd"
+            // "About" item, and "Quit" item use the product name "Ave"
             // instead of the Cargo binary name.
             #[cfg(target_os = "macos")]
             {
                 set_dev_dock_icon();
                 refresh_traffic_light_position_on_window_changes(app);
 
-                let app_menu = SubmenuBuilder::new(app, "Berd")
+                let app_menu = SubmenuBuilder::new(app, "Ave")
                     .about_with_text(
-                        "About Berd",
-                        Some(AboutMetadataBuilder::new().name(Some("Berd")).build()),
+                        "About Ave",
+                        Some(AboutMetadataBuilder::new().name(Some("Ave")).build()),
                     )
                     .separator()
                     .services()
                     .separator()
-                    .hide_with_text("Hide Berd")
+                    .hide_with_text("Hide Ave")
                     .hide_others()
                     .show_all()
                     .separator()
-                    .quit_with_text("Quit Berd")
+                    .quit_with_text("Quit Ave")
                     .build()?;
                 let edit_menu = SubmenuBuilder::new(app, "Edit")
                     .undo()

@@ -14,7 +14,7 @@
   "heading": {
     "ariaLabel": "Universal search",
     "filterAriaLabel": "Filter search results",
-    "placeholder": "Search your Berd"
+    "placeholder": "Search your Ave"
   },
   "noMatches": "No matches for \"{{query}}\"",
   "settingsResult": {

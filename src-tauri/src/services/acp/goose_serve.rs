@@ -249,6 +249,15 @@ impl GooseServeProcess {
             &app_handle,
             &mut command,
         );
+        // Personal Ave builds keep Goose chats, projects, and provider config
+        // under this app's own data folder. Official Berd has no such folder,
+        // so it keeps using the shared Goose directories.
+        if let Ok(app_data_dir) = app_handle.path().app_data_dir() {
+            let ave_goose_root = app_data_dir.join("goose");
+            if ave_goose_root.join("state").is_dir() && ave_goose_root.join("config").is_dir() {
+                command.env("GOOSE_PATH_ROOT", &ave_goose_root);
+            }
+        }
 
         command
             .arg("serve")
@@ -398,10 +407,11 @@ pub(crate) fn acp_websocket_url(port: u16, secret_key: &str) -> String {
 }
 
 fn add_release_webview_origin_arg(command: &mut Command) {
-    if cfg!(debug_assertions) {
-        return;
-    }
-
+    // Ave is a personal debug bundle, but its window still loads from
+    // tauri://localhost. Without this flag goose serve rejects that origin
+    // and the app opens to a WebSocket error. Official release builds always
+    // pass it; debug builds of official Berd do not, because `just dev` uses
+    // a localhost Vite origin instead.
     command.arg("--allowed-origin").arg(TAURI_WEBVIEW_ORIGIN);
 }
 

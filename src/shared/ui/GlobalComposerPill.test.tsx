@@ -420,6 +420,19 @@ describe("GlobalComposerPill", () => {
     expect(input).not.toHaveClass("scrollbar-subtle");
   });
 
+  it("suppresses native focus chrome on the global composer", () => {
+    renderGlobalComposer(vi.fn());
+
+    const input = screen.getByRole("textbox");
+
+    expect(input).not.toHaveClass("focus-override");
+    expect(input).toHaveClass(
+      "focus:outline-none",
+      "focus-visible:ring-0",
+      "focus-visible:ring-offset-0",
+    );
+  });
+
   it("focuses the textarea when clicking the quick compose surface", async () => {
     const user = userEvent.setup();
     renderGlobalComposer(vi.fn());

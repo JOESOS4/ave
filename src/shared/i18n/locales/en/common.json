@@ -105,19 +105,19 @@
     "clipboardUnavailable": "Clipboard API not available"
   },
   "rendererError": {
-    "description": "Berd hit a renderer error. Reload the window to try again.",
+    "description": "Ave hit a renderer error. Reload the window to try again.",
     "reload": "Reload",
     "title": "Something went wrong"
   },
   "startup": {
-    "loadingLabel": "Starting Berd",
+    "loadingLabel": "Starting Ave",
     "error": {
       "gooseServe": {
-        "title": "Berd couldn't start",
+        "title": "Ave couldn't start",
         "description": "The local Goose service didn't start. Try again, or copy the startup details and open the logs folder to share them with support."
       },
       "networkWarp": {
-        "title": "Berd can't reach Block's internal services",
+        "title": "Ave can't reach Block's internal services",
         "description": "It looks like you aren't connected to Cloudflare WARP.",
         "steps": {
           "connect": "Connect to WARP",
@@ -126,11 +126,11 @@
       },
       "runtimeConfig": {
         "title": "Configuration unavailable",
-        "description": "Berd couldn't load its runtime configuration. Try again, or copy the startup details and share them with support."
+        "description": "Ave couldn't load its runtime configuration. Try again, or copy the startup details and share them with support."
       },
       "unknown": {
-        "title": "Berd couldn't start",
-        "description": "Berd couldn't finish starting. Try again, or copy the startup details and open the logs folder to share them with support."
+        "title": "Ave couldn't start",
+        "description": "Ave couldn't finish starting. Try again, or copy the startup details and open the logs folder to share them with support."
       },
       "copyDetails": "Copy details",
       "openLogsFolder": "Open logs folder",
@@ -195,7 +195,7 @@
       "authentication": "Sign in with GitHub CLI, then try again.",
       "cliMissing": "Install GitHub CLI to load pull requests.",
       "timeout": "GitHub took too long to respond. Try again.",
-      "database": "Berd couldn’t match pull requests to projects. Try again.",
+      "database": "Ave couldn’t match pull requests to projects. Try again.",
       "network": "Check your connection and try again.",
       "rateLimited": "GitHub is rate limiting requests. Automatic refresh will retry in a few minutes.",
       "unknown": "Pull requests couldn’t be loaded. Try again."
