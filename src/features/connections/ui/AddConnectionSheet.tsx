@@ -85,10 +85,11 @@ export function AddConnectionSheet({
           </SheetDescription>
         </SheetHeader>
 
+        <div className="mt-4 border-t" />
         <Tabs
           value={tab}
           onValueChange={(v) => setTab(v as "catalog" | "custom" | "other")}
-          className="mt-4"
+          className="mt-3"
         >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="catalog">Catalog</TabsTrigger>
@@ -113,36 +114,46 @@ export function AddConnectionSheet({
             </p>
           </TabsContent>
 
-          <TabsContent value="custom" className="mt-4 space-y-4">
-            <CustomMcpForm
-              onSubmit={async (req) => {
-                try {
-                  const res = await addLocalMcp(req);
-                  // For now the backend just acknowledges; UI can show toast or
-                  // immediately fall back to agent if persistence is still missing.
-                  console.info("add_local_mcp result", res);
-                  onOpenChange(false);
-                  // TODO: invalidate inventory + connections queries on success
-                } catch (e) {
-                  console.error("add_local_mcp failed", e);
-                }
-              }}
-              onAskAgent={handleAskAgent}
-            />
+          <TabsContent value="custom" className="mt-4">
+            <div className="rounded-lg border bg-card p-4">
+              <CustomMcpForm
+                onSubmit={async (req) => {
+                  try {
+                    const res = await addLocalMcp(req);
+                    console.info("add_local_mcp result", res);
+                    onOpenChange(false);
+                  } catch (e) {
+                    console.error("add_local_mcp failed", e);
+                  }
+                }}
+                onAskAgent={handleAskAgent}
+              />
+            </div>
           </TabsContent>
 
-          <TabsContent value="other" className="mt-4 space-y-3">
-            <div className="rounded-md border p-4 text-sm">
-              Paste a JSON config or use the agent for anything not in the
-              catalog.
+          <TabsContent value="other" className="mt-4">
+            <div className="rounded-lg border bg-card p-4 space-y-4">
+              <div className="space-y-1.5">
+                <Label>Paste MCP config (JSON)</Label>
+                <Textarea
+                  placeholder={`{\n  "mcpServers": {\n    "my-server": {\n      "command": "npx",\n      "args": ["--some-flag"]\n    }\n  }\n}`}
+                  rows={8}
+                  className="font-mono text-xs"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button variant="primary" className="flex-1" disabled>
+                  Add from JSON
+                </Button>
+                <Button variant="outline" onClick={handleAskAgent}>
+                  <IconRobot className="size-4" /> Ask agent
+                </Button>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                JSON paste is a stub. Will parse and add once the write path is
+                implemented.
+              </p>
             </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleAskAgent}
-            >
-              <IconRobot className="size-4" /> Paste JSON / Ask agent
-            </Button>
           </TabsContent>
         </Tabs>
 
