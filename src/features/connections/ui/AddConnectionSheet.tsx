@@ -74,8 +74,8 @@ export function AddConnectionSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-lg">
-        <SheetHeader>
+      <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-lg">
+        <SheetHeader className="px-6 pt-6 pr-12 pb-4">
           <SheetTitle>{t("connections.addTitle", "Add connection")}</SheetTitle>
           <SheetDescription>
             {t(
@@ -85,11 +85,12 @@ export function AddConnectionSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-4 border-t" />
+        <div aria-hidden="true" className="mx-6 h-px bg-border/70" />
+
         <Tabs
           value={tab}
           onValueChange={(v) => setTab(v as "catalog" | "custom" | "other")}
-          className="mt-3"
+          className="min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-6"
         >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="catalog">Catalog</TabsTrigger>
@@ -126,7 +127,6 @@ export function AddConnectionSheet({
                     console.error("add_local_mcp failed", e);
                   }
                 }}
-                onAskAgent={handleAskAgent}
               />
             </div>
           </TabsContent>
@@ -141,14 +141,9 @@ export function AddConnectionSheet({
                   className="font-mono text-xs"
                 />
               </div>
-              <div className="flex gap-2">
-                <Button variant="primary" className="flex-1" disabled>
-                  Add from JSON
-                </Button>
-                <Button variant="outline" onClick={handleAskAgent}>
-                  <IconRobot className="size-4" /> Ask agent
-                </Button>
-              </div>
+              <Button variant="primary" className="w-full" disabled>
+                Add from JSON
+              </Button>
               <p className="text-[10px] text-muted-foreground">
                 JSON paste is a stub. Will parse and add once the write path is
                 implemented.
@@ -157,7 +152,9 @@ export function AddConnectionSheet({
           </TabsContent>
         </Tabs>
 
-        <SheetFooter className="mt-6 flex flex-col gap-2 sm:flex-row">
+        <div aria-hidden="true" className="mx-6 h-px bg-border/70" />
+
+        <SheetFooter className="mt-0 flex-row items-center px-6 py-4">
           <Button
             variant="ghost"
             className="sm:mr-auto"
@@ -179,10 +176,8 @@ export function AddConnectionSheet({
 
 function CustomMcpForm({
   onSubmit,
-  onAskAgent,
 }: {
   onSubmit: (req: AddLocalMcpRequest) => Promise<void>;
-  onAskAgent: () => void;
 }) {
   const form = useExtensionModalForm();
   const [submitting, setSubmitting] = useState(false);
@@ -276,18 +271,13 @@ function CustomMcpForm({
         </div>
       )}
 
-      <div className="flex gap-2 pt-2">
-        <Button
-          onClick={handleSubmit}
-          disabled={!form.canSubmit || submitting}
-          className="flex-1"
-        >
-          <IconPlus className="size-4" /> Add
-        </Button>
-        <Button variant="outline" onClick={onAskAgent}>
-          <IconRobot className="size-4" /> Ask agent
-        </Button>
-      </div>
+      <Button
+        onClick={handleSubmit}
+        disabled={!form.canSubmit || submitting}
+        className="w-full"
+      >
+        <IconPlus className="size-4" /> Add
+      </Button>
       <p className="text-[10px] text-muted-foreground">
         Direct persistence is a stub. This will route to the agent fallback until
         the real write path lands.
