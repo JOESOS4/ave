@@ -21,12 +21,15 @@ export function LocalMcpSection({
   searchTerm,
   workspacePaths,
   onAddConnection,
+  showTitle = true,
 }: {
   searchTerm: string;
   workspacePaths: string[];
   onAddConnection?: () => void;
+  showTitle?: boolean;
 }) {
   const { t } = useTranslation("settings");
+  const sectionTitle = showTitle ? t("connections.sections.local") : undefined;
   const query = useQuery({
     queryKey: [...LOCAL_MCP_INVENTORY_QUERY_KEY, workspacePaths],
     queryFn: () => listLocalMcpInventory(workspacePaths),
@@ -58,7 +61,7 @@ export function LocalMcpSection({
 
   if (query.isLoading) {
     return (
-      <SettingsSection title={t("connections.sections.local")}>
+      <SettingsSection title={sectionTitle}>
         {[1, 2, 3].map((item) => (
           <div
             key={item}
@@ -74,7 +77,7 @@ export function LocalMcpSection({
 
   if (groups.length === 0 && hasFailure) {
     return (
-      <SettingsSection title={t("connections.sections.local")}>
+      <SettingsSection title={sectionTitle}>
         <Alert>
           <AlertTitle>{t("connections.localError.title")}</AlertTitle>
           <AlertDescription>
@@ -97,7 +100,7 @@ export function LocalMcpSection({
 
   if (groups.length === 0) {
     return (
-      <SettingsSection title={t("connections.sections.local")}>
+      <SettingsSection title={sectionTitle}>
         <div className="flex flex-col items-start gap-2 p-3">
           <div>
             <p className="text-sm text-foreground">
@@ -123,7 +126,7 @@ export function LocalMcpSection({
   }
 
   return (
-    <SettingsSection title={t("connections.sections.local")}>
+    <SettingsSection title={sectionTitle}>
       {showDisabledBanner ? (
         <Alert variant="default" className="pr-10">
           <IconAlertTriangle aria-hidden="true" className="text-warning!" />
