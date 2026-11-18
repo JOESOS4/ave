@@ -511,6 +511,8 @@ pub fn run() {
             commands::connections::list_connections,
             #[cfg(feature = "block-managed-connections")]
             commands::connections::disconnect_connection,
+            #[cfg(feature = "block-managed-connections")]
+            commands::connections::add_local_mcp_cmd,
             #[cfg(feature = "block-automations")]
             commands::automations::get_automation_tiles,
             #[cfg(feature = "block-automations")]

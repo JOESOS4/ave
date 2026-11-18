@@ -22,7 +22,7 @@ import {
 interface UseOpenAiRealtimeDictationOptions {
   disabled?: boolean;
   onRecordingStart?: () => void;
-  onTranscriptText: (text: string) => void;
+  onTranscriptText: (text: string, isFinal?: boolean) => void;
 }
 
 interface DictationErrorToast {
@@ -281,10 +281,9 @@ export function useOpenAiRealtimeDictation({
         merged,
       });
       transcriptRef.current = merged;
-      onTranscriptTextRef.current(merged);
-      setIsTranscribing(
-        event.type !== OPENAI_REALTIME_TRANSCRIPT_COMPLETED_EVENT,
-      );
+      const isFinal = event.type === OPENAI_REALTIME_TRANSCRIPT_COMPLETED_EVENT;
+      onTranscriptTextRef.current(merged, isFinal);
+      setIsTranscribing(!isFinal);
     },
     [],
   );

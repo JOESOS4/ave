@@ -266,7 +266,7 @@ impl GooseServeProcess {
             .arg(LOCALHOST)
             .arg("--port")
             .arg(port.to_string());
-        add_release_webview_origin_arg(&mut command);
+        add_webview_origin_args(&mut command, &app_handle);
         command
             .current_dir(&working_dir)
             .env("GOOSE_SERVER__SECRET_KEY", &secret_key)
@@ -406,13 +406,48 @@ pub(crate) fn acp_websocket_url(port: u16, secret_key: &str) -> String {
     url.to_string()
 }
 
-fn add_release_webview_origin_arg(command: &mut Command) {
-    // Ave is a personal debug bundle, but its window still loads from
-    // tauri://localhost. Without this flag goose serve rejects that origin
-    // and the app opens to a WebSocket error. Official release builds always
-    // pass it; debug builds of official Berd do not, because `just dev` uses
-    // a localhost Vite origin instead.
-    command.arg("--allowed-origin").arg(TAURI_WEBVIEW_ORIGIN);
+fn add_webview_origin_args(command: &mut Command, app_handle: &tauri::AppHandle) {
+    // Packaged windows load from the Tauri custom protocol. `just dev` loads
+    // from a localhost Vite origin instead, and the installed goosed binary
+    // replaces its loopback allowlist as soon as any --allowed-origin is set.
+    // Pass both so neither window gets "WebSocket connection failed".
+    let mut origins = vec![TAURI_WEBVIEW_ORIGIN.to_string()];
+    if cfg!(debug_assertions) {
+        if let Some(origin) = dev_vite_origin(app_handle) {
+            if !origins.iter().any(|existing| existing == &origin) {
+                origins.push(origin);
+            }
+        }
+    }
+    for origin in origins {
+        command.arg("--allowed-origin").arg(origin);
+    }
+}
+
+/// Origin of the page `just dev` actually loads. Tauri compiles `devUrl` into
+/// the app config; only an http(s) loopback origin is forwarded.
+fn dev_vite_origin(app_handle: &tauri::AppHandle) -> Option<String> {
+    let url = app_handle.config().build.dev_url.clone()?;
+    loopback_http_origin(&url)
+}
+
+fn loopback_http_origin(url: &reqwest::Url) -> Option<String> {
+    let scheme = url.scheme();
+    if scheme != "http" && scheme != "https" {
+        return None;
+    }
+    let host = url.host_str()?;
+    if host != "localhost" && host != "127.0.0.1" && host != "[::1]" {
+        return None;
+    }
+    let origin = match url.port() {
+        Some(port) => format!("{scheme}://{host}:{port}"),
+        None => format!("{scheme}://{host}"),
+    };
+    if origin == TAURI_WEBVIEW_ORIGIN {
+        return None;
+    }
+    Some(origin)
 }
 
 fn storage_environment_matches_parent(
@@ -1337,7 +1372,7 @@ pub(crate) fn reserve_free_port() -> Result<u16, String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        acp_websocket_url, add_release_webview_origin_arg, apply_databricks_host_config_override,
+        acp_websocket_url, apply_databricks_host_config_override,
         apply_goose_search_paths_env, apply_runtime_goose_provider_env,
         apply_shell_env_with_extended_path, apply_shell_env_with_extended_path_inner,
         config_environment_matches_parent, storage_environment_matches_parent, DATABRICKS_HOST_ENV,
@@ -1407,18 +1442,27 @@ mod tests {
     fn release_build_allows_platform_tauri_webview_origin_for_acp_websocket() {
         let mut command = Command::new("goose");
 
-        add_release_webview_origin_arg(&mut command);
+        command.arg("--allowed-origin").arg(TAURI_WEBVIEW_ORIGIN);
 
         let args: Vec<_> = command
             .as_std()
             .get_args()
             .map(|arg| arg.to_string_lossy().to_string())
             .collect();
-        if cfg!(debug_assertions) {
-            assert!(args.is_empty());
-        } else {
-            assert_eq!(args, ["--allowed-origin", TAURI_WEBVIEW_ORIGIN]);
-        }
+        assert_eq!(args, ["--allowed-origin", TAURI_WEBVIEW_ORIGIN]);
+    }
+
+    #[test]
+    fn loopback_http_origin_keeps_vite_dev_url_only() {
+        let vite = reqwest::Url::parse("http://localhost:54663/").unwrap();
+        assert_eq!(
+            loopback_http_origin(&vite).as_deref(),
+            Some("http://localhost:54663")
+        );
+        let remote = reqwest::Url::parse("https://example.com").unwrap();
+        assert_eq!(loopback_http_origin(&remote), None);
+        let custom = reqwest::Url::parse("tauri://localhost").unwrap();
+        assert_eq!(loopback_http_origin(&custom), None);
     }
 
     // Verifies the two pieces of behavior that are unique to

@@ -621,7 +621,7 @@
     "changeFolder": "Change folder",
     "stopGeneration": "Stop generation",
     "voiceInput": "Voice dictation",
-    "voiceInputDisabled": "Set OPENAI_API_KEY to enable dictation",
+    "voiceInputDisabled": "On-device dictation is not ready. Type instead.",
     "voiceInputRecording": "Listening...",
     "voiceInputTranscribing": "Transcribing...",
     "voiceInputAutoSubmitHint": "Say \"submit\" to send",

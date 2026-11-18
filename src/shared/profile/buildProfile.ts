@@ -53,7 +53,7 @@ function readBuildFeatures(): Record<BuildFeature, boolean> {
     // Native Voice Conversation is public functionality and deliberately does
     // not share dictation's KGoose-backed build gate.
     voiceConversation: true,
-    voiceDictation: import.meta.env.VITE_VOICE_DICTATION === "1",
+    voiceDictation: true,
     securityMl: import.meta.env.VITE_SECURITY_ML === "1",
     updater: import.meta.env.VITE_UPDATER_ENABLED !== "false",
   };

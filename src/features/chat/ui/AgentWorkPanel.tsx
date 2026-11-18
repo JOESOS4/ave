@@ -192,12 +192,33 @@ function getActivePreviewState(
 ): ActivePreviewState {
   // The active preview is a chronological window over the work stream: the
   // last N items in true order, with everything older behind "previous steps".
-  const visibleItems = items.slice(-COMPACT_ACTIVE_PREVIEW_ITEM_COUNT);
-  const hiddenItems = items.slice(0, items.length - visibleItems.length);
+  // Progress (text) items are always shown — only tool/thought items count
+  // toward the compact limit so substantive pre-tool prose is not hidden.
+  const collapsibleCount = items.filter(
+    (item) => item.kind !== "progress",
+  ).length;
+  const visibleCollapsible = Math.min(
+    collapsibleCount,
+    COMPACT_ACTIVE_PREVIEW_ITEM_COUNT,
+  );
+  const hiddenCollapsible = collapsibleCount - visibleCollapsible;
+
+  // Walk backwards: keep the last N collapsible items + all progress items.
+  let kept = 0;
+  const visible: AgentWorkTimelineItem[] = [];
+  for (let i = items.length - 1; i >= 0; i -= 1) {
+    const item = items[i];
+    if (item.kind === "progress" || kept < visibleCollapsible) {
+      visible.unshift(item);
+      if (item.kind !== "progress") kept += 1;
+    }
+  }
+  const hiddenItems = items.slice(0, items.length - visible.length);
+
   return {
-    visibleItems,
+    visibleItems: visible,
     hiddenItems,
-    hiddenStepCount: hiddenItems.length,
+    hiddenStepCount: hiddenCollapsible,
   };
 }
 

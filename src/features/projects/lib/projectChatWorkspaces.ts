@@ -144,9 +144,7 @@ function friendlyWorkspaceSetupError(error: unknown): Error {
     return new Error("Creating the worktree took too long. Try again.");
   }
   if (/permission denied|operation not permitted/i.test(message)) {
-    return new Error(
-      "Ave doesn’t have permission to create a worktree there.",
-    );
+    return new Error("Ave doesn’t have permission to create a worktree there.");
   }
   if (
     /git\s+worktree\s+add/i.test(message) ||

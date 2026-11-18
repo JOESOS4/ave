@@ -2000,6 +2000,7 @@ export function ChatInput({
                 }}
                 composerActions={{
                   canSend,
+                  hasComposerText: text.trim().length > 0,
                   isStreaming,
                   attachmentsEnabled: scopedControls.attachments,
                   onAttachFiles: handleAttachFiles,
@@ -2008,7 +2009,7 @@ export function ChatInput({
                   sendDisabledReason,
                   onSend: handleSend,
                   onStop,
-                  voiceEnabled: scopedControls.voice && dictation.isEnabled,
+                  voiceEnabled: scopedControls.voice,
                   voiceStarting: scopedControls.voice && dictation.isStarting(),
                   voiceRecording: scopedControls.voice && dictation.isRecording,
                   voiceTranscribing:

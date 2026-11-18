@@ -1,0 +1,10 @@
+--- a/src/features/chat/hooks/useOpenAiRealtimeDictation.ts
++++ b/src/features/chat/hooks/useOpenAiRealtimeDictation.ts
+@@ -22,7 +22,8 @@ interface UseOpenAiRealtimeDictationOptions {
+   disabled?: boolean;
+   onRecordingStart?: () => void;
+-  onTranscriptText: (text: string) => void;
++  onTranscriptText: (text: string, isFinal: boolean) => void;
+ }
+ 
+ interface DictationErrorToast {

@@ -430,6 +430,83 @@
             "additionalProperties": false
           }
         },
+        "auto-name": {
+          "description": "Generate and apply a task-specific title to a chat session using a fast heuristic, optionally escalating to a dedicated lightweight model. Respects manual renames unless --force is passed.",
+          "fields": [
+            {
+              "name": "session_id",
+              "required": true,
+              "kind": "string",
+              "description": "Id of the session to rename."
+            },
+            {
+              "name": "force",
+              "required": false,
+              "kind": "boolean",
+              "description": "Ignore the user_renamed_at flag and force a new auto-generated title."
+            },
+            {
+              "name": "dry_run",
+              "required": false,
+              "kind": "boolean",
+              "description": "Compute the title but do not persist it. Returns the proposed title."
+            },
+            {
+              "name": "heuristic_only",
+              "required": false,
+              "kind": "boolean",
+              "description": "Skip the dedicated naming model and use only the local heuristic."
+            },
+            {
+              "name": "endpoint",
+              "required": false,
+              "kind": "string",
+              "description": "HTTP endpoint for the dedicated lightweight naming model (OpenAI-compatible /v1/chat/completions)."
+            },
+            {
+              "name": "model",
+              "required": false,
+              "kind": "string",
+              "description": "Model identifier to use at the dedicated endpoint (e.g. nimble, jev)."
+            }
+          ],
+          "schema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {
+              "session_id": {
+                "type": "string",
+                "description": "Id of the session to rename."
+              },
+              "force": {
+                "default": false,
+                "description": "Ignore the user_renamed_at flag and force a new auto-generated title.",
+                "type": "boolean"
+              },
+              "dry_run": {
+                "default": false,
+                "description": "Compute the title but do not persist it. Returns the proposed title.",
+                "type": "boolean"
+              },
+              "heuristic_only": {
+                "default": false,
+                "description": "Skip the dedicated naming model and use only the local heuristic.",
+                "type": "boolean"
+              },
+              "endpoint": {
+                "description": "HTTP endpoint for the dedicated lightweight naming model (OpenAI-compatible /v1/chat/completions).",
+                "type": "string",
+                "format": "uri"
+              },
+              "model": {
+                "description": "Model identifier to use at the dedicated endpoint (e.g. nimble, jev).",
+                "type": "string"
+              }
+            },
+            "required": ["session_id"],
+            "additionalProperties": false
+          }
+        },
         "move": {
           "description": "Move a chat session into a project; the session list in the app regroups immediately.",
           "fields": [

@@ -64,3 +64,25 @@ export async function listConnections(): Promise<ListConnectionsResponse> {
 export async function disconnectConnection(provider: string): Promise<void> {
   await invoke("disconnect_connection", { extension: provider });
 }
+
+export interface AddLocalMcpRequest {
+  name: string;
+  type: "stdio" | "streamable_http";
+  description?: string;
+  cmd?: string;
+  args?: string[];
+  uri?: string;
+  envs?: Record<string, string>;
+  timeout?: number;
+}
+
+export interface AddLocalMcpResult {
+  accepted: boolean;
+  message: string;
+}
+
+export async function addLocalMcp(
+  request: AddLocalMcpRequest,
+): Promise<AddLocalMcpResult> {
+  return invoke<AddLocalMcpResult>("add_local_mcp_cmd", { request });
+}

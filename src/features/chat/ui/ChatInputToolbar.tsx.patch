@@ -1,0 +1,12 @@
+--- a/src/features/chat/ui/ChatInputToolbar.tsx
++++ b/src/features/chat/ui/ChatInputToolbar.tsx
+@@ -530,7 +530,7 @@ export function ChatInputToolbar({
+           )}
+ 
+-          {(voiceEnabled || voiceRecording || ownsActiveVoiceConversation) && (
+-            <ComposerActionButton
++          {(voiceEnabled || voiceRecording || ownsActiveVoiceConversation) && !ownsActiveVoiceConversation && (
++            <DictationMicButton
+               type="button"
+               size="icon-pill-sm"
+               visualState={voiceConversationMicrophoneFeedbackState}

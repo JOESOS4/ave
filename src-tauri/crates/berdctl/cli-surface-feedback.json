@@ -40,6 +40,11 @@
           "about": "Rename a chat session",
           "afterHelp": "Example:\n  berdctl session rename --session-id <session-id> --title \"CI triage\"\n\nResult:\n  {\"ok\": true} — the new title appears immediately in the app's session list."
         },
+        "auto-name": {
+          "action": "auto-name",
+          "about": "Auto-generate a concise session title",
+          "afterHelp": "Examples:\n  berdctl session auto-name --session-id <id>\n  berdctl session auto-name --session-id <id> --dry-run\n  berdctl session auto-name --session-id <id> --force --endpoint http://localhost:11434 --model nimble\n\nResult:\n  {\"ok\": true, \"old_title\": \"...\", \"new_title\": \"...\", \"used_model\": false} or {\"skipped\": \"manual_rename\"}"
+        },
         "move": {
           "action": "move",
           "about": "Move a chat session into a project",

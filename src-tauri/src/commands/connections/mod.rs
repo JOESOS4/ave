@@ -1,8 +1,10 @@
+mod add_local_mcp;
 mod client;
 
 use crate::commands::runtime_config::RuntimeConfigState;
 use crate::services::distro_bundle::DistroBundleState;
 use crate::services::kgoose::KgooseContext;
+use add_local_mcp::{add_local_mcp, AddLocalMcpRequest};
 use client::{delete_oauth_extension, list_oauth_extensions};
 use serde_json::Value;
 use tauri::State;
@@ -26,4 +28,9 @@ pub async fn disconnect_connection(
     let runtime_config = runtime_config_state.ready_config(state.inner()).await?;
     let kgoose = KgooseContext::new(state.inner(), &runtime_config);
     delete_oauth_extension(&kgoose, &extension).await
+}
+
+#[tauri::command]
+pub async fn add_local_mcp_cmd(request: AddLocalMcpRequest) -> Result<add_local_mcp::AddLocalMcpResult, String> {
+    add_local_mcp(request).await
 }

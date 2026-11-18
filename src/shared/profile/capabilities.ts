@@ -80,7 +80,6 @@ export const PROFILE_CAPABILITY_REGISTRY: ProfileCapabilityRegistry = {
     kind: "runtimeFeature",
     feature: "voiceDictation",
     toggle: "voiceDictation",
-    requiresKgoose: true,
   },
   voiceConversation: {
     kind: "buildFeature",

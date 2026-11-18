@@ -30,6 +30,7 @@ import { moveSessionToGroupCommand } from "./impl/moveSessionToGroup";
 import { openFeedbackCommand } from "./impl/openFeedback";
 import { openSessionCommand } from "./impl/openSession";
 import { renameSessionCommand } from "./impl/renameSession";
+import { autoNameSessionCommand } from "./impl/autoNameSession";
 import { notifySessionCommand } from "./impl/notifySession";
 import { sendSessionCommand } from "./impl/sendSession";
 import { setProjectStartupModeCommand } from "./impl/setProjectStartupMode";
@@ -71,6 +72,7 @@ export const ALL_TOOL_GROUPS = {
         list: "list",
         get: "get",
         rename: "rename",
+        "auto-name": "auto-name",
         move: "move",
         "move-to-group": "move_to_group",
         "clear-project": "clear_project",
@@ -86,6 +88,7 @@ export const ALL_TOOL_GROUPS = {
       list: listSessionsCommand,
       get: getSessionCommand,
       rename: renameSessionCommand,
+      "auto-name": autoNameSessionCommand,
       move: moveSessionCommand,
       move_to_group: moveSessionToGroupCommand,
       clear_project: clearSessionProjectCommand,

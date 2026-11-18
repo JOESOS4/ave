@@ -46,11 +46,6 @@ interface UseVoiceDictationOptions {
   ) => boolean | Promise<boolean>;
   onAutoSubmit?: (text: string) => boolean | Promise<boolean>;
   resetTextarea: () => void;
-  /**
-   * When true, auto-submit on trigger phrase will NOT call `onSend`.
-   * Instead, the trigger phrase is stripped and the remaining transcription
-   * is left in the textarea for the user to review and send manually.
-   */
   isSendLocked?: boolean;
 }
 
@@ -136,7 +131,14 @@ export function useVoiceDictation({
   );
 
   const handleRealtimeTranscript = useCallback(
-    (transcript: string) => {
+    (transcript: string, isFinal = true) => {
+      // Only commit to the draft when the segment is final.
+      // This makes dictation edit-safe: the user can type while the mic is hot.
+      if (!isFinal) {
+        // Future: expose pending tail for grey rendering
+        return;
+      }
+
       const previousTranscript = lastRealtimeTranscriptRef.current;
       const latest = textRef.current;
       const merged = replaceTrailingTranscribedText(
@@ -168,13 +170,6 @@ export function useVoiceDictation({
     [autoSubmitPhrases, finishAutoSubmit, setText],
   );
 
-  // Single shared chokepoint for both ChatInput and GlobalComposerPill: a
-  // disabled `voiceDictation` capability forces the dictation off (no mic
-  // permission/secret requests) and propagates `isEnabled=false`, so the
-  // toolbar hides the mic button on both surfaces. Read reactively so a
-  // runtime/endpoint `featureToggles.voiceDictation` flip re-renders and hides
-  // the mic button live, rather than leaving it stale until an unrelated
-  // re-render samples a fresh snapshot.
   const voiceDictationEnabled = useProfileCapability("voiceDictation");
 
   const dictation = useOpenAiRealtimeDictation({

@@ -1,24 +1,14 @@
 import { useMemo, useState } from "react";
-import {
-  Mic,
-  MicOff,
-  Phone,
-  PhoneOff,
-  ArrowUp,
-  File,
-  FolderOpen,
-  Settings2,
-  Plus,
-} from "lucide-react";
+import { ArrowUp, File, FolderOpen, Settings2, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLocaleFormatting } from "@/shared/i18n";
 import { useSessionCostPreference } from "@/features/chat/lib/sessionCostPreference";
-import { useAnyVoiceDictationActive } from "@/features/chat/hooks/useVoiceDictation";
 import { IconPlayerStopFilled } from "@tabler/icons-react";
 import { cn } from "@/shared/lib/cn";
 import { ContextRing } from "./ContextRing";
 import { Button } from "@/shared/ui/button";
 import { ComposerActionButton } from "@/shared/ui/composer-action-button";
+import { DictationMicButton } from "./DictationMicButton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,6 +40,8 @@ import type {
 
 interface ChatInputToolbarComposerActions {
   canSend: boolean;
+  /** When false, the send button stays collapsed so the mic is the only right-hand action. */
+  hasComposerText?: boolean;
   isStreaming: boolean;
   onSend: () => void;
   onStop?: () => void;
@@ -98,7 +90,6 @@ export function ChatInputToolbar({
 }: ChatInputToolbarProps) {
   const { t } = useTranslation("chat");
   const { formatNumber } = useLocaleFormatting();
-  const anyVoiceDictationActive = useAnyVoiceDictationActive();
   const catalogEntries = useProviderCatalogStore((state) => state.entries);
   const [openMenu, setOpenMenu] = useState<OpenToolbarMenu | null>(null);
   const handleMenuOpenChange = (menu: OpenToolbarMenu) => (open: boolean) => {
@@ -146,6 +137,7 @@ export function ChatInputToolbar({
   } = contextUsage;
   const {
     canSend,
+    hasComposerText = false,
     isStreaming,
     onSend,
     onStop,
@@ -155,7 +147,6 @@ export function ChatInputToolbar({
     disabled = false,
     sendDisabledReason,
     voiceEnabled = false,
-    voiceStarting = false,
     voiceRecording = false,
     voiceTranscribing = false,
     voiceShortcutDisplayParts,
@@ -165,53 +156,23 @@ export function ChatInputToolbar({
   const compactionControlsSupported =
     supportsCompactionControls ??
     supportsContextCompactionControls(selectedProvider);
+  const showSendAction = isStreaming || hasComposerText || canSend;
   const sendButtonTooltip = canSend
     ? t("toolbar.sendMessage")
     : sendDisabledReason;
   const voiceConversationState = voiceConversation?.state ?? "off";
   const voiceConversationRunning = voiceConversation?.active === true;
-  const ownsActiveVoiceConversation =
-    voiceConversationRunning &&
-    voiceConversation?.ownsActiveConversation !== false;
-  const voiceConversationMicrophoneMuted =
-    voiceConversation?.microphoneMuted ?? false;
-  const voiceConversationTooltip = ownsActiveVoiceConversation
-    ? t("toolbar.voiceConversation.hangUp")
-    : voiceConversationRunning
-      ? t("toolbar.voiceConversation.start")
-      : voiceConversationState !== "off"
-        ? t(`toolbar.voiceConversation.states.${voiceConversationState}`, {
-            sessionId: voiceConversation?.boundSessionId ?? "",
-            error: voiceConversation?.error ?? "",
-          })
-        : t("toolbar.voiceConversation.start");
-  const voiceInputTooltip = ownsActiveVoiceConversation
-    ? voiceConversationMicrophoneMuted
-      ? t("toolbar.voiceConversation.unmuteMicrophone")
-      : t("toolbar.voiceConversation.muteMicrophone")
-    : voiceRecording
-      ? t("toolbar.voiceInputRecording")
-      : voiceTranscribing
-        ? t("toolbar.voiceInputTranscribing")
-        : t("toolbar.voiceInput");
-  const voiceConversationFeedbackState =
-    voiceConversationState === "error" ? "error" : undefined;
-  const voiceConversationMicrophoneFeedbackState =
-    ownsActiveVoiceConversation &&
-    !voiceConversationMicrophoneMuted &&
-    voiceConversationState === "user-speaking"
-      ? "active"
-      : undefined;
+  // Conversation mode is not a composer affordance. Keep its lifecycle out of
+  // the toolbar so the phone control cannot appear beside dictation.
+  const voiceInputTooltip = voiceRecording
+    ? t("toolbar.voiceInputRecording")
+    : voiceTranscribing
+      ? t("toolbar.voiceInputTranscribing")
+      : t("toolbar.voiceInput");
   const nativeVoiceOwnsMicrophone =
     voiceConversationState === "starting" ||
     voiceConversationState === "stopping" ||
-    (voiceConversationRunning && !ownsActiveVoiceConversation);
-  const dictationOwnsMicrophone =
-    anyVoiceDictationActive ||
-    voiceStarting ||
-    voiceRecording ||
-    voiceTranscribing;
-
+    voiceConversationRunning;
   const agentProviders = useMemo(() => {
     const seen = new Set<string>();
     const available: AgentPickerOption[] = [];
@@ -531,92 +492,44 @@ export function ChatInputToolbar({
             </Popover>
           )}
 
-          {(voiceEnabled || voiceRecording || ownsActiveVoiceConversation) && (
-            <ComposerActionButton
-              type="button"
-              size="icon-pill-sm"
-              visualState={voiceConversationMicrophoneFeedbackState}
-              disabled={
-                nativeVoiceOwnsMicrophone ||
-                (!ownsActiveVoiceConversation &&
-                  !voiceRecording &&
-                  (!voiceEnabled || disabled))
-              }
-              onClick={
-                ownsActiveVoiceConversation
-                  ? () => void voiceConversation?.onMicrophoneMuteToggle()
-                  : onVoiceToggle
-              }
-              aria-label={
-                ownsActiveVoiceConversation
-                  ? voiceConversationMicrophoneMuted
-                    ? t("toolbar.voiceConversation.unmuteMicrophone")
-                    : t("toolbar.voiceConversation.muteMicrophone")
-                  : voiceRecording
-                    ? t("toolbar.voiceInputRecording")
-                    : t("toolbar.voiceInput")
-              }
-              aria-pressed={
-                ownsActiveVoiceConversation
-                  ? voiceConversationMicrophoneMuted
-                  : voiceRecording
-              }
-              tooltip={
-                !ownsActiveVoiceConversation &&
-                !voiceRecording &&
+          <DictationMicButton
+            isRecording={voiceRecording}
+            isTranscribing={voiceTranscribing}
+            disabled={nativeVoiceOwnsMicrophone || disabled}
+            onClick={onVoiceToggle ?? (() => {})}
+            ariaLabel={
+              voiceRecording
+                ? t("toolbar.voiceInputRecording")
+                : t("toolbar.voiceInput")
+            }
+            tooltip={
+              !voiceEnabled ? (
+                t("toolbar.voiceInputDisabled")
+              ) : !voiceRecording &&
                 !voiceTranscribing &&
                 voiceShortcutDisplayParts?.length ? (
-                  <span className="flex items-center gap-2">
-                    <span>{voiceInputTooltip}</span>
-                    <span className="flex items-center gap-1">
-                      {voiceShortcutDisplayParts.map((part) => (
-                        <Kbd key={part}>{part}</Kbd>
-                      ))}
-                    </span>
+                <span className="flex items-center gap-2">
+                  <span>{voiceInputTooltip}</span>
+                  <span className="flex items-center gap-1">
+                    {voiceShortcutDisplayParts.map((part) => (
+                      <Kbd key={part}>{part}</Kbd>
+                    ))}
                   </span>
-                ) : (
-                  voiceInputTooltip
-                )
-              }
-              className={cn(
-                voiceRecording &&
-                  "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:text-destructive-foreground active:bg-destructive active:text-destructive-foreground",
-                voiceTranscribing && "animate-pulse",
-              )}
-            >
-              {ownsActiveVoiceConversation &&
-              voiceConversationMicrophoneMuted ? (
-                <MicOff aria-hidden="true" />
+                </span>
               ) : (
-                <Mic aria-hidden="true" />
-              )}
-            </ComposerActionButton>
-          )}
+                voiceInputTooltip
+              )
+            }
+          />
 
-          {voiceConversation?.visible ? (
-            <ComposerActionButton
-              type="button"
-              size="icon-pill-sm"
-              disabled={voiceConversation.disabled || dictationOwnsMicrophone}
-              onClick={() => void voiceConversation.onToggle()}
-              aria-label={voiceConversationTooltip}
-              visualState={
-                ownsActiveVoiceConversation
-                  ? "destructive"
-                  : voiceConversationFeedbackState
-              }
-              tooltip={voiceConversationTooltip}
-            >
-              {ownsActiveVoiceConversation ? (
-                <PhoneOff aria-hidden="true" />
-              ) : (
-                <Phone aria-hidden="true" />
-              )}
-            </ComposerActionButton>
-          ) : null}
-        </div>
-
-        <div>
+          <div
+            className={cn(
+              "overflow-hidden transition-[width,opacity,transform] duration-200 ease-out",
+              showSendAction
+                ? "w-7 translate-x-0 opacity-100"
+                : "pointer-events-none w-0 translate-x-2 opacity-0",
+            )}
+          >
           {isStreaming && onStop ? (
             <ComposerActionButton
               type="button"
@@ -659,6 +572,7 @@ export function ChatInputToolbar({
               ) : null}
             </Tooltip>
           )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { IconRobot } from "@tabler/icons-react";
+import { IconPlus, IconRobot } from "@tabler/icons-react";
 import {
-  CONNECTIONS_QUERY_KEY,
+  addLocalMcp,
   listConnections,
+  type AddLocalMcpRequest,
 } from "@/features/connections/api/connections";
 import {
   Sheet,
@@ -16,8 +17,22 @@ import {
 } from "@/shared/ui/sheet";
 import { Button } from "@/shared/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Textarea } from "@/shared/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import { OAUTH_PROVIDERS } from "@/features/connections/catalog";
 import { resolveConnectionStatus } from "@/features/connections/lib/connectionStatus";
+import {
+  useExtensionModalForm,
+  type ExtensionModalType,
+} from "@/features/extensions/hooks/useExtensionModalForm";
 import { OAuthConnectionCard } from "./ConnectionCards";
 import type { SetupChatRequest } from "@/features/chat/lib/setupChatRequest";
 
@@ -33,11 +48,10 @@ export function AddConnectionSheet({
   onAskAgent,
 }: AddConnectionSheetProps) {
   const { t } = useTranslation("settings");
-  const queryClient = useQueryClient();
   const [tab, setTab] = useState<"catalog" | "custom" | "other">("catalog");
 
   const managedQuery = useQuery({
-    queryKey: CONNECTIONS_QUERY_KEY,
+    queryKey: ["connections"],
     queryFn: listConnections,
     enabled: open,
   });
@@ -99,11 +113,22 @@ export function AddConnectionSheet({
             </p>
           </TabsContent>
 
-          <TabsContent value="custom" className="mt-4">
-            <div className="rounded-md border p-4 text-sm text-muted-foreground">
-              Streamable-HTTP and stdio MCP form will appear here (reuses
-              existing extension primitives).
-            </div>
+          <TabsContent value="custom" className="mt-4 space-y-4">
+            <CustomMcpForm
+              onSubmit={async (req) => {
+                try {
+                  const res = await addLocalMcp(req);
+                  // For now the backend just acknowledges; UI can show toast or
+                  // immediately fall back to agent if persistence is still missing.
+                  console.info("add_local_mcp result", res);
+                  onOpenChange(false);
+                  // TODO: invalidate inventory + connections queries on success
+                } catch (e) {
+                  console.error("add_local_mcp failed", e);
+                }
+              }}
+              onAskAgent={handleAskAgent}
+            />
           </TabsContent>
 
           <TabsContent value="other" className="mt-4 space-y-3">
@@ -136,5 +161,126 @@ export function AddConnectionSheet({
         </SheetFooter>
       </SheetContent>
     </Sheet>
+  );
+}
+
+// --- Custom MCP form (reuses extension form primitives) ---
+
+function CustomMcpForm({
+  onSubmit,
+  onAskAgent,
+}: {
+  onSubmit: (req: AddLocalMcpRequest) => Promise<void>;
+  onAskAgent: () => void;
+}) {
+  const form = useExtensionModalForm();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!form.canSubmit || submitting) return;
+    setSubmitting(true);
+    try {
+      const payload: AddLocalMcpRequest = {
+        name: form.name,
+        type: form.type as "stdio" | "streamable_http",
+        description: form.description || undefined,
+        cmd: form.cmd || undefined,
+        args: form.args
+          ? form.args.split("\n").filter(Boolean)
+          : undefined,
+        uri: form.uri || undefined,
+        envs: form.envVars.reduce((acc, v) => {
+          if (v.key) acc[v.key] = v.value;
+          return acc;
+        }, {} as Record<string, string>),
+        timeout: parseInt(form.timeout, 10) || undefined,
+      };
+      await onSubmit(payload);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1.5">
+        <Label htmlFor="mcp-name">Name</Label>
+        <Input
+          id="mcp-name"
+          value={form.name}
+          onChange={(e) => form.setName(e.target.value)}
+          placeholder="my-mcp-server"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="mcp-type">Type</Label>
+        <Select
+          value={form.type}
+          onValueChange={(v) => form.setType(v as ExtensionModalType)}
+        >
+          <SelectTrigger id="mcp-type">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="stdio">stdio</SelectItem>
+            <SelectItem value="streamable_http">streamable-http</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {form.type === "stdio" && (
+        <>
+          <div className="space-y-1.5">
+            <Label htmlFor="mcp-cmd">Command</Label>
+            <Input
+              id="mcp-cmd"
+              value={form.cmd}
+              onChange={(e) => form.setCmd(e.target.value)}
+              placeholder="npx"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="mcp-args">Arguments (one per line)</Label>
+            <Textarea
+              id="mcp-args"
+              value={form.args}
+              onChange={(e) => form.setArgs(e.target.value)}
+              placeholder={"--token\nsecret-argument"}
+              rows={3}
+            />
+          </div>
+        </>
+      )}
+
+      {form.type === "streamable_http" && (
+        <div className="space-y-1.5">
+          <Label htmlFor="mcp-uri">URI</Label>
+          <Input
+            id="mcp-uri"
+            value={form.uri}
+            onChange={(e) => form.setUri(e.target.value)}
+            placeholder="https://example.com/mcp"
+          />
+        </div>
+      )}
+
+      <div className="flex gap-2 pt-2">
+        <Button
+          onClick={handleSubmit}
+          disabled={!form.canSubmit || submitting}
+          className="flex-1"
+        >
+          <IconPlus className="size-4" /> Add
+        </Button>
+        <Button variant="outline" onClick={onAskAgent}>
+          <IconRobot className="size-4" /> Ask agent
+        </Button>
+      </div>
+      <p className="text-[10px] text-muted-foreground">
+        Direct persistence is a stub. This will route to the agent fallback until
+        the real write path lands.
+      </p>
+    </div>
   );
 }
