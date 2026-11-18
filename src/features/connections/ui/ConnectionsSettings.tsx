@@ -29,6 +29,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { RemoteHostsSettings } from "@/features/remoteHosts/ui/RemoteHostsSettings";
 import { OAuthConnectionCard } from "./ConnectionCards";
 import { LocalMcpSection } from "./LocalMcpSection";
+import { AddConnectionSheet } from "./AddConnectionSheet";
 
 const CONNECTIONS_REFETCH_INTERVAL_MS = 5_000;
 
@@ -63,6 +64,7 @@ export function ConnectionsSettings({
   const { t } = useTranslation("settings");
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  const [addSheetOpen, setAddSheetOpen] = useState(false);
   const showManagedConnections = useProfileCapability("managedConnections");
   const activeProject = useProjectStore((state) =>
     state.projects.find((project) => project.id === state.activeProjectId),
@@ -126,6 +128,8 @@ export function ConnectionsSettings({
     });
   };
 
+  const openAddSheet = () => setAddSheetOpen(true);
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -135,17 +139,15 @@ export function ConnectionsSettings({
         titleClassName="font-medium"
         descriptionClassName="text-xs font-normal text-muted-foreground"
         actions={
-          onAskAgentToAddMcp ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={askAgentToAddConnection}
-            >
-              <IconPlus className="size-3.5" />
-              {t("connections.askAgent")}
-            </Button>
-          ) : null
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={openAddSheet}
+          >
+            <IconPlus className="size-3.5" />
+            {t("connections.add", "Add connection")}
+          </Button>
         }
       />
 
@@ -191,14 +193,18 @@ export function ConnectionsSettings({
         <LocalMcpSection
           searchTerm={searchTerm}
           workspacePaths={workspacePaths}
-          onAddConnection={
-            onAskAgentToAddMcp ? askAgentToAddConnection : undefined
-          }
+          onAddConnection={askAgentToAddConnection}
         />
 
         {/* Renders nothing unless the remote-ssh-sessions experiment is on. */}
         <RemoteHostsSettings />
       </SettingsSections>
+
+      <AddConnectionSheet
+        open={addSheetOpen}
+        onOpenChange={setAddSheetOpen}
+        onAskAgent={askAgentToAddConnection}
+      />
     </div>
   );
 }
